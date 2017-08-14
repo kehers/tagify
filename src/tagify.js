@@ -114,15 +114,13 @@ Tagify.prototype = {
 
             if( e.type == "focus" )
                 e.target.className = 'input';
-            else if( e.type == "blur") {
-                if( text == "" ){
-                    e.target.className = 'input placeholder';
-                    this.DOM.input.removeAttribute('style');
-                }
-                else {
-                    if( this.addTag(text) )
-                        e.target.value = '';
-                }
+            else if( e.type == "blur" && text ){
+                this.addTag(text);
+                e.target.value = '';
+            }
+            else{
+                e.target.className = 'input placeholder';
+                this.DOM.input.removeAttribute('style');
             }
         },
 
@@ -158,7 +156,7 @@ Tagify.prototype = {
 
             e.target.style.width = ((e.target.value.length + 1) * 7) + 'px';
 
-            if( value.indexOf(',') != -1 || isDatalistInput ){
+            if( /*value.indexOf(',') != -1 || */isDatalistInput ){
                 this.addTag( value );
                 e.target.value = ''; // clear the input field's value
             }
@@ -260,7 +258,7 @@ Tagify.prototype = {
         if( !value ) return;
 
         // go over each tag and add it (if there were multiple ones)
-        return value.split(',').filter(function(v){ return !!v }).map(function(v){
+        return [value].map(function(v){
             v = v.trim();
 
             var tagElm = document.createElement('tag'),
@@ -332,6 +330,6 @@ Tagify.prototype = {
 
     // update the origianl (hidden) input field's value
     update : function(){
-        this.DOM.originalInput.value = this.value.join(', ');
+        this.DOM.originalInput.value = this.value.join(',');
     }
 }
